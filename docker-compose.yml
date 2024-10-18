@@ -35,13 +35,19 @@ services:
     build:
       context: ./nextjs
       dockerfile: Dockerfile
+      target: dev
+    restart: always
+    command: npm run dev
     volumes:
-      - ./nextjs:/var/www/html
+      - ./nextjs:/app
       # Add any additional volumes if needed
+      - /app/node_modules
+      - /app/.next
     ports:
       - 3000:3000
-    # environment:
-    #   - NODE_ENV=production
+    environment:
+      - NODE_ENV=development
+
 
   # Nginx Service
   nginx:
