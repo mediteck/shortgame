@@ -12,11 +12,11 @@ services:
     depends_on:
       - mysql
     environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_DATABASE=laravel
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      DB_HOST: mysql:3306
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   # MySQL Service
   mysql:
@@ -26,9 +26,10 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_DATABASE=laravel
-      #- MYSQL_USERNAME=root
-      - MYSQL_root_PASSWORD=root
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}_toor
       
   # NextJS Service
   nextjs:
@@ -64,11 +65,17 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     ports:
         - 8080:80
-    links:
+    depends_on:
         - mysql
     environment:
-        PMA_HOST: mysql
-        PMA_USER: root
-        PMA_PASSWORD: root
-        PMA_PORT: 3306
-        PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      #MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}_toor
+
+  mailhog:
+      image: mailhog/mailhog
+      container_name: 'mailhog'
+      ports:
+        - "1025:1025"
+        - "8025:8025"
